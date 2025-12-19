@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaraLibraLink - Modern Book Rental System</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Minimal Blue & White Design */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 750px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      color: #1e293b;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 .gradient-text {
+      color: #2563eb;
+    }
+
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: #64748b;
+      margin-bottom: 3rem;
+      line-height: 1.7;
+      font-weight: 400;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-buttons .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      outline: none;
+    }
+
+    .hero-buttons .btn-primary:hover:not(:disabled) {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .hero-buttons .btn-primary:active:not(:disabled) {
+      background: #1e40af;
+      transform: translateY(0);
+    }
+
+    .hero-buttons .btn-primary:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    .hero-buttons .btn-secondary {
+      background: white;
+      color: #2563eb;
+      border: 2px solid #e2e8f0;
+      outline: none;
+    }
+
+    .hero-buttons .btn-secondary:hover:not(:disabled) {
+      border-color: #2563eb;
+      background: #f8fafc;
+      color: #1d4ed8;
+    }
+
+    .hero-buttons .btn-secondary:active:not(:disabled) {
+      background: #e2e8f0;
+      border-color: #1d4ed8;
+    }
+
+    .hero-buttons .btn-secondary:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.3);
+      outline-offset: 2px;
+    }
+
+    .features-section {
+      padding: 6rem 2rem;
+      background: #f8fafc;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-header p {
+      font-size: 1.125rem;
+      color: #64748b;
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .feature-card:hover {
+      border-color: #2563eb;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 1.5rem;
+      background: #2563eb;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .feature-icon::before {
+      content: '';
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .feature-icon.icon-library::before {
+      box-shadow: 0 3px 0 0 white inset, 0 -3px 0 0 white inset;
+    }
+
+    .feature-icon.icon-lightning::before {
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top: 16px solid white;
+      border-bottom: 0;
+      border-radius: 0;
+      transform: rotate(15deg);
+    }
+
+    .feature-icon.icon-book::before {
+      box-shadow: 2px 0 0 0 white inset;
+    }
+
+    .feature-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #1e293b;
+    }
+
+    .feature-card p {
+      color: #64748b;
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .cta-section {
+      background: #2563eb;
+      padding: 6rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .cta-content {
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-section p {
+      font-size: 1.125rem;
+      margin-bottom: 2.5rem;
+      opacity: 0.95;
+      line-height: 1.7;
+    }
+
+    .cta-section .btn {
+      background: white;
+      color: #2563eb;
+      font-weight: 600;
+      padding: 1rem 2.5rem;
+      border: none;
+    }
+
+    .cta-section .btn:hover {
+      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      background: white;
+      padding: 4rem 2rem 2rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-column h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      color: #1e293b;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-column p {
+      color: #64748b;
+      line-height: 1.7;
+      font-size: 0.9rem;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-column ul li a {
+      color: #64748b;
+      text-decoration: none;
+      transition: color 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .footer-column ul li a:hover {
+      color: #2563eb;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 2.5rem;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        padding: 5rem 1.5rem 3rem;
+        min-height: 85vh;
+      }
+
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+
+      .hero .subtitle {
+        font-size: 1.1rem;
+      }
+
+      .features-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .section-header h2 {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .cta-section {
+        padding: 4rem 1.5rem;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="login.html" class="nav-link">Login</a></li>
+        <li><a href="register.html" class="nav-link">Register</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Rent Books, Read Stories,<br><span class="gradient-text">Discover Worlds</span></h1>
+      <p class="subtitle">Your modern book rental platform. Browse thousands of books, rent with ease, and manage your reading journey all in one place.</p>
+      <div class="hero-buttons">
+        <a href="register.html" class="btn btn-primary btn-lg">Start Renting</a>
+        <a href="login.html" class="btn btn-secondary btn-lg">Sign In</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Choose LaraLibraLink</h2>
+        <p>Everything you need for a seamless book rental experience</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon icon-library"></div>
+          <h3>Vast Collection</h3>
+          <p>Access thousands of books across all genres. From bestsellers to classics, find your next great read.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon icon-lightning"></div>
+          <h3>Instant Access</h3>
+          <p>Rent books instantly with our streamlined process. No waiting, no hassle - just click and read.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon icon-book"></div>
+          <h3>Easy Management</h3>
+          <p>Track your rentals, manage returns, and organize your reading list all from one dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to Start Your Reading Journey?</h2>
+      <p>Join thousands of readers who are already enjoying our book rental platform. Start exploring today!</p>
+      <a href="register.html" class="btn">Get Started Free</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-column">
+        <h3>LaraLibraLink</h3>
+        <p>Your trusted partner for book rentals. Making reading accessible and enjoyable for everyone.</p>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Platform</h3>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Support</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">FAQs</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2025 LaraLibraLink. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var $hamburger = $('#hamburger');
+      var $navMenu = $('#nav-menu');
+
+      $hamburger.on('click', function() {
+        $hamburger.toggleClass('active');
+        $navMenu.toggleClass('active');
+      });
+
+      $('.nav-link').on('click', function() {
+        $hamburger.removeClass('active');
+        $navMenu.removeClass('active');
+      });
+    });
+  </script>
+</body>
+</html>

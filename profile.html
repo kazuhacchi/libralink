@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - LaraLibraLink</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #ffffff;
+      min-height: 100vh;
+    }
+
+    .profile-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.25rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Main Content */
+    main {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      padding-top: 6rem;
+    }
+
+
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .avatar-container {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #2563eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .avatar-upload {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .avatar-upload:hover {
+      background: #1d4ed8;
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .avatar-upload input {
+      display: none;
+    }
+
+    .user-info {
+      text-align: center;
+    }
+
+    .user-name {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .user-username {
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+
+    .profile-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #1e293b;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    input {
+      padding: 1rem 1.2rem;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      color: #1e293b;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    input:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      background: #f8fafc;
+    }
+
+    input::placeholder {
+      color: #64748b;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    button {
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      outline: none;
+    }
+
+    button[type="submit"] {
+      background: #2563eb;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    button[type="submit"]:active:not(:disabled) {
+      background: #1e40af;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    }
+
+    button[type="submit"]:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    button[type="button"] {
+      background: #ef4444;
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    }
+
+    button[type="button"]:hover:not(:disabled) {
+      background: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    button[type="button"]:active:not(:disabled) {
+      background: #b91c1c;
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+    }
+
+    button[type="button"]:focus-visible {
+      outline: 3px solid rgba(239, 68, 68, 0.4);
+      outline-offset: 2px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: #64748b;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+
+    /* Messages */
+    .message {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      text-align: center;
+      display: none;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .message.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #dc2626;
+    }
+
+    .message.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #16a34a;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem;
+      }
+
+      .nav-menu {
+        gap: 1.5rem;
+      }
+
+      .profile-container {
+        padding: 2.5rem 2rem;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .avatar {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .profile-container {
+        padding: 2rem 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+      }
+
+      .avatar-upload {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    /* Animation for elements */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+</style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu">
+        <li><a href="#" id="backToDashboardLink">← Back to Dashboard</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <div class="profile-container">
+      <h2>My Profile</h2>
+      
+      <div id="message" class="message"></div>
+      
+      <div class="profile-header">
+        <div class="avatar-container">
+    <img id="avatarImage" class="avatar" src="https://libralink.jhrweb.bytevortexz.com/uploads/profile.png" alt="Profile Avatar" onload="if(typeof UPLOADS_BASE_URL !== 'undefined') this.src = UPLOADS_BASE_URL + '/profile.png';">
+    <label class="avatar-upload" title="Change profile photo">
+        <i>📷</i>
+        <input type="file" id="avatarInput" accept="image/*">
+    </label>
+</div>
+        <div class="user-info">
+          <h3 id="userName" class="user-name">Loading...</h3>
+          <p id="userUsername" class="user-username">@username</p>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h3 class="section-title">Personal Information</h3>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="firstname">First Name:</label>
+            <input type="text" id="firstname" name="firstname" required>
+            <label for="lastname">Last Name:</label>
+            <input type="text" id="lastname" name="lastname" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required disabled style="background: #f1f5f9; cursor: not-allowed;">
+            <small style="color: #64748b; font-size: 0.85rem;">Email cannot be changed</small>
+          </div>
+          
+          <div class="btn-group">
+            <button type="submit">Update Profile</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="profile-section">
+        <h3 class="section-title">Change Password</h3>
+        <form id="passwordForm">
+          <div class="form-group">
+            <label for="currentPassword">Current Password:</label>
+            <input type="password" id="currentPassword" name="current_password" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="new_password" required minlength="6">
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password:</label>
+            <input type="password" id="confirmPassword" name="confirm_password" required minlength="6">
+          </div>
+          
+          <div class="btn-group">
+            <button type="submit">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 LaraLibraLink. All rights reserved.</p>
+  </footer>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Get user data from localStorage or API
+    var authToken;
+    var userData;
+
+    $(document).ready(function() {
+      authToken = localStorage.getItem('authToken');
+
+      // Wire up Back to Dashboard link to use role-based helper
+      $('#backToDashboardLink').on('click', function(e) {
+        e.preventDefault();
+        var role = localStorage.getItem('userRole');
+        goToDashboardForRole(role);
+      });
+
+      if (!authToken) {
+        showMessage('Please log in to view your profile', 'error');
+        setTimeout(function() { window.location.href = 'login.html'; }, 2000);
+        return;
+      }
+
+      // Try to get user data from localStorage first
+      var storedUserData = localStorage.getItem('userData');
+      if (storedUserData && storedUserData !== 'null' && storedUserData !== 'undefined') {
+        try {
+          userData = JSON.parse(storedUserData);
+          populateProfileForm(userData);
+        } catch (error) {
+          console.error('Error parsing stored user data:', error);
+          localStorage.removeItem('userData');
+        }
+      }
+
+      // Fetch fresh data from API
+      $.ajax({
+        url: API_BASE + '/profile',
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + authToken
+        }
+      })
+      .done(function(response) {
+        userData = response;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        populateProfileForm(userData);
+      })
+      .fail(function(jqXHR) {
+        console.error('Error fetching profile:', jqXHR);
+        if (jqXHR.status === 401) {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userData');
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!userData) {
+          showMessage('Error loading profile data', 'error');
+        }
+      });
+    });
+
+    // Populate form with user data
+    function populateProfileForm(data) {
+      var fullName = ((data.firstname || '') + ' ' + (data.lastname || '')).trim() || 'User';
+      $('#userName').text(fullName);
+      $('#userUsername').text('@' + data.username);
+      
+      $('#firstname').val(data.firstname || '');
+      $('#lastname').val(data.lastname || '');
+      $('#username').val(data.username || '');
+      $('#email').val(data.email || '');
+      
+      // Set default avatar URL
+      var avatarUrl = UPLOADS_BASE_URL + '/profile.png';
+
+      // Prefer server-provided avatar URL if available
+      if (data.avatar_url) {
+        avatarUrl = data.avatar_url;
+      } else if (data.avatar_path) {
+        // Fallback if avatar_url missing
+        if (data.avatar_path.indexOf('http') === 0) {
+          avatarUrl = data.avatar_path;
+        } else {
+          avatarUrl = UPLOADS_BASE_URL + '/' + data.avatar_path.replace(/^uploads\//, '').replace(/^\/+/, '');
+        }
+      }
+
+      // Update image source
+      $('#avatarImage').attr('src', avatarUrl);
+      console.log('Avatar URL:', avatarUrl);
+    }
+
+    // Handle profile form submission - TEXT ONLY
+    $('#profileForm').on('submit', function(e) {
+      e.preventDefault();
+      
+      var $submitButton = $(this).find('button[type="submit"]');
+      var originalText = $submitButton.text();
+      
+      // Show loading state
+      $submitButton.prop('disabled', true).text('Updating...');
+      
+      var formData = new FormData();
+      formData.append('firstname', $('#firstname').val());
+      formData.append('lastname', $('#lastname').val());
+      formData.append('username', $('#username').val());
+      
+      console.log('Updating profile (text only)...');
+      
+      $.ajax({
+        url: API_BASE + '/profile/update',
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+        },
+        data: formData,
+        processData: false,
+        contentType: false
+      })
+      .done(function(response) {
+        showMessage('Profile updated successfully!', 'success');
+        // Update local storage with new data
+        if (userData) {
+          userData.firstname = $('#firstname').val();
+          userData.lastname = $('#lastname').val();
+          userData.username = $('#username').val();
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+        // Update displayed name
+        var fullName = ($('#firstname').val() + ' ' + $('#lastname').val()).trim();
+        $('#userName').text(fullName || 'User');
+        $('#userUsername').text('@' + $('#username').val());
+      })
+      .fail(function(jqXHR) {
+        console.error('Error updating profile:', jqXHR);
+        if (jqXHR.status === 401) {
+          localStorage.removeItem('authToken');
+          window.location.href = 'login.html';
+          return;
+        }
+        var errorMessage = 'Failed to update profile';
+        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+          errorMessage = jqXHR.responseJSON.error;
+        }
+        showMessage(errorMessage, 'error');
+      })
+      .always(function() {
+        // Reset button state
+        $submitButton.prop('disabled', false).text(originalText);
+      });
+    });
+
+    // Handle password form submission
+    $('#passwordForm').on('submit', function(e) {
+      e.preventDefault();
+
+      var currentPassword = $('#currentPassword').val().trim();
+      var newPassword = $('#newPassword').val().trim();
+      var confirmPassword = $('#confirmPassword').val().trim();
+
+      // Basic validation
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        showMessage('Please fill in all password fields.', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showMessage('New passwords do not match.', 'error');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showMessage('Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      var $btn = $(this).find('button[type="submit"]');
+      var origText = $btn.text();
+      $btn.prop('disabled', true).text('Updating...');
+
+      var authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        showMessage('Session expired. Please login again.', 'error');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      $.ajax({
+        url: API_BASE + '/change-password',
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + authToken,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+          confirm_password: confirmPassword
+        })
+      })
+      .done(function(response) {
+        console.log('Password change result:', response);
+        showMessage('Password updated successfully!', 'success');
+        $('#passwordForm')[0].reset();
+      })
+      .fail(function(jqXHR) {
+        console.error('Error changing password:', jqXHR);
+        if (jqXHR.status === 401) {
+          localStorage.removeItem('authToken');
+          window.location.href = 'login.html';
+          return;
+        }
+        var errMsg = 'Network error. Please check your connection.';
+        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+          if (typeof jqXHR.responseJSON.error === 'string') {
+            errMsg = jqXHR.responseJSON.error;
+          } else if (typeof jqXHR.responseJSON.error === 'object') {
+            var firstError = Object.values(jqXHR.responseJSON.error)[0];
+            errMsg = Array.isArray(firstError) ? firstError[0] : firstError;
+          }
+        }
+        showMessage(errMsg, 'error');
+      })
+      .always(function() {
+        $btn.prop('disabled', false).text(origText);
+      });
+    });
+
+    // Handle avatar upload separately
+    $('#avatarInput').on('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      
+      // Check file type
+      if (file.type.indexOf('image/') !== 0) {
+        showMessage('Please select an image file', 'error');
+        return;
+      }
+      
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showMessage('Image must be less than 5MB', 'error');
+        return;
+      }
+      
+      var formData = new FormData();
+      formData.append('avatar', file);
+      
+      console.log('Uploading avatar...');
+      
+      $.ajax({
+        url: API_BASE + '/profile/avatar',
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+        },
+        data: formData,
+        processData: false,
+        contentType: false
+      })
+      .done(function(response) {
+        showMessage('Profile picture updated successfully!', 'success');
+        // Update avatar image with the server path
+        var avatarUrl = UPLOADS_BASE_URL + '/' + response.avatar_path.replace(/^uploads\//, '').replace(/^\/+/, '');
+        $('#avatarImage').attr('src', avatarUrl);
+        console.log('Avatar updated to:', avatarUrl);
+        // Update user data in localStorage
+        if (userData) {
+          userData.avatar_path = response.avatar_path;
+          localStorage.setItem('userData', JSON.stringify(userData));
+        }
+      })
+      .fail(function(jqXHR) {
+        console.error('Error updating avatar:', jqXHR);
+        if (jqXHR.status === 401) {
+          localStorage.removeItem('authToken');
+          window.location.href = 'login.html';
+          return;
+        }
+        var errorMessage = 'Failed to update profile picture';
+        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+          errorMessage = jqXHR.responseJSON.error;
+        }
+        showMessage(errorMessage, 'error');
+      });
+    });
+
+    // Show message function
+    function showMessage(message, type) {
+      var $messageEl = $('#message');
+      $messageEl.text(message);
+      $messageEl.removeClass('error success').addClass(type);
+      $messageEl.show();
+      
+      // Auto-hide success messages after 3 seconds
+      if (type === 'success') {
+        setTimeout(function() {
+          $messageEl.hide();
+        }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>

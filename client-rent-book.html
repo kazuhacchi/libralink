@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rent a Book - Client - LaraLibraLink</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .form-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      padding: 2.5rem;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: white;
+      color: #1e293b;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group input[readonly] {
+      background: #f8fafc;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      background: #1e40af;
+      transform: translateY(0);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="client-rent-book.html" class="nav-link active">Rent Book</a></li>
+        <li><a href="client-my-rentals.html" class="nav-link">My Rentals</a></li>
+        <li><a href="profile.html" class="nav-link">Profile</a></li>
+        <li><a href="#" id="logoutBtn" class="nav-link">Logout</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <h1>Rent a Book</h1>
+      
+      <div class="form-container">
+        <form id="rentBookForm">
+          <div class="form-group">
+            <label>Select Book *</label>
+            <select name="book_id" id="bookSelect" required>
+              <option value="">Loading books...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Select Librarian (optional)</label>
+            <select name="librarian_id" id="librarianSelect">
+              <option value="">Any available librarian</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rental Duration (days) *</label>
+            <input type="number" name="rental_duration" min="1" required>
+          </div>
+          <div class="form-group">
+            <label>Rental Date *</label>
+            <input type="date" name="rental_date" required id="rentalDate">
+          </div>
+          <div class="form-group">
+            <label>Return Date (auto-calculated)</label>
+            <input type="date" name="return_date" id="returnDate" readonly>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Rental Request</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/books.js"></script>
+  <script src="js/rentals.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $(document).ready(function() {
+      requireAuth();
+      
+      var role = localStorage.getItem('userRole');
+      if (role !== 'client') {
+        alert('Access denied. Client role required.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Set minimum date to tomorrow (cannot rent starting today)
+      var today = new Date();
+      var tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      var tomorrowStr = tomorrow.toISOString().split('T')[0];
+      $('#rentalDate').attr('min', tomorrowStr);
+
+      // Calculate return date
+      function calculateReturnDate() {
+        var rentalDate = $('#rentalDate').val();
+        var duration = parseInt($('input[name="rental_duration"]').val()) || 0;
+        
+        if (rentalDate && duration > 0) {
+          var date = new Date(rentalDate);
+          date.setDate(date.getDate() + duration);
+          $('#returnDate').val(date.toISOString().split('T')[0]);
+        }
+      }
+
+      $('#rentalDate').on('change', calculateReturnDate);
+      $('input[name="rental_duration"]').on('input', calculateReturnDate);
+
+      function loadAvailableBooks() {
+        loadBooks()
+          .then(function(books) {
+            var availableBooks = books.filter(function(book) { return book.is_available; });
+            var $select = $('#bookSelect');
+            
+            if (availableBooks.length === 0) {
+              $select.html('<option value="">No available books</option>');
+              return;
+            }
+
+            $select.html('<option value="">Select a book...</option>');
+            $.each(availableBooks, function(index, book) {
+              var $option = $('<option>')
+                .val(book.id)
+                .text(book.title + ' by ' + book.author + ' - ₱' + parseFloat(book.rental_price).toFixed(2) + '/day');
+              $select.append($option);
+            });
+          })
+          .catch(function(err) {
+            console.error('Error loading books:', err);
+            $('#bookSelect').html('<option value="">Error loading books</option>');
+          });
+      }
+
+      function loadLibrariansList() {
+        authAxios({
+          method: 'GET',
+          url: API_BASE + '/librarians'
+        })
+        .then(function(response) {
+          var librarians = response.data || [];
+          var $select = $('#librarianSelect');
+
+          if (!librarians.length) {
+            $select.html('<option value="">No librarians available</option>');
+            return;
+          }
+
+          $select.html('<option value="">Any available librarian</option>');
+          $.each(librarians, function(index, lib) {
+            var $option = $('<option>')
+              .val(lib.id)
+              .text(lib.full_name + ' (@' + lib.username + ')');
+            $select.append($option);
+          });
+        })
+        .catch(function(err) {
+          console.error('Error loading librarians:', err);
+          $('#librarianSelect').html('<option value="">Error loading librarians</option>');
+        });
+      }
+
+      $('#rentBookForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var rentalData = {
+          book_id: parseInt($('#bookSelect').val()),
+          rental_duration: parseInt($('input[name="rental_duration"]').val()),
+          rental_date: $('#rentalDate').val()
+        };
+
+        var librarianId = $('#librarianSelect').val();
+        if (librarianId) {
+          rentalData.librarian_id = parseInt(librarianId);
+        }
+
+        createRental(rentalData)
+          .then(function() {
+            alert('Rental request submitted successfully!');
+            $('#rentBookForm')[0].reset();
+            $('#returnDate').val('');
+            loadAvailableBooks();
+            loadLibrariansList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error submitting rental: ' + msg);
+          });
+      });
+
+      loadAvailableBooks();
+      loadLibrariansList();
+
+      // Hamburger menu
+      var $hamburger = $('#hamburger');
+      var $navMenu = $('#nav-menu');
+      if ($hamburger.length && $navMenu.length) {
+        $hamburger.on('click', function() {
+          $hamburger.toggleClass('active');
+          $navMenu.toggleClass('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

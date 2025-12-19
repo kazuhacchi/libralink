@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - LaraLibraLink</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .dashboard-header {
+      margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-header p {
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+      border-color: #2563eb;
+    }
+
+    .stat-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .stat-icon::before {
+      content: '';
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: var(--radius-sm);
+    }
+
+    .stat-icon.books::before {
+      border-radius: 3px;
+      box-shadow: 0 3px 0 0 white inset, 0 -3px 0 0 white inset;
+    }
+
+    .stat-icon.rentals::before {
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+    }
+
+    .stat-icon.users::before {
+      border-radius: 50%;
+      box-shadow: 0 4px 0 -2px white, 0 -4px 0 -2px white, 4px 0 0 -2px white, -4px 0 0 -2px white;
+    }
+
+    .stat-icon.pending::before {
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: white;
+      border-bottom: none;
+      border-radius: 0;
+    }
+
+    .stat-icon.active::before {
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+    }
+
+    .stat-info h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .stat-info p {
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .quick-actions {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      padding: 2rem;
+    }
+
+    .quick-actions h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .action-btn {
+      padding: 0.875rem 1.5rem;
+      background: #2563eb;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      border: none;
+    }
+
+    .action-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .action-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu" id="nav-menu">
+        <!-- Admin nav -->
+        <li class="nav-item nav-admin"><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li class="nav-item nav-admin"><a href="admin-rentals.html" class="nav-link">Rentals</a></li>
+        <li class="nav-item nav-admin"><a href="admin-books.html" class="nav-link">Books</a></li>
+        <li class="nav-item nav-admin"><a href="admin-users.html" class="nav-link">Users</a></li>
+
+        <!-- Librarian nav -->
+        <li class="nav-item nav-librarian"><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li class="nav-item nav-librarian"><a href="librarian-rentals.html" class="nav-link">Rentals</a></li>
+
+        <!-- Client nav -->
+        <li class="nav-item nav-client"><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li class="nav-item nav-client"><a href="client-rent-book.html" class="nav-link">Rent Book</a></li>
+        <li class="nav-item nav-client"><a href="client-my-rentals.html" class="nav-link">My Rentals</a></li>
+
+        <!-- Shared -->
+        <li class="nav-item"><a href="profile.html" class="nav-link">Profile</a></li>
+        <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link">Logout</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <div class="dashboard-header">
+        <h1 id="dashboardTitle">Dashboard</h1>
+        <p>Welcome back! Here's an overview of your book rental system.</p>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="stats-grid" id="statsGrid">
+        <!-- Admin stats -->
+        <div class="stat-card role-admin">
+          <div class="stat-icon books"></div>
+          <div class="stat-info">
+            <h3 id="totalBooks">-</h3>
+            <p>Total Books</p>
+          </div>
+        </div>
+        <div class="stat-card role-admin">
+          <div class="stat-icon rentals"></div>
+          <div class="stat-info">
+            <h3 id="totalRentals">-</h3>
+            <p>Total Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-admin">
+          <div class="stat-icon pending"></div>
+          <div class="stat-info">
+            <h3 id="pendingRentals">-</h3>
+            <p>Pending Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-admin">
+          <div class="stat-icon users"></div>
+          <div class="stat-info">
+            <h3 id="totalUsers">-</h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+
+        <!-- Librarian stats -->
+        <div class="stat-card role-librarian">
+          <div class="stat-icon books"></div>
+          <div class="stat-info">
+            <h3 id="assignedRentals">-</h3>
+            <p>Assigned Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-librarian">
+          <div class="stat-icon pending"></div>
+          <div class="stat-info">
+            <h3 id="pendingRentalsLibrarian">-</h3>
+            <p>Pending Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-librarian">
+          <div class="stat-icon active"></div>
+          <div class="stat-info">
+            <h3 id="activeRentalsLibrarian">-</h3>
+            <p>Active Rentals</p>
+          </div>
+        </div>
+
+        <!-- Client stats -->
+        <div class="stat-card role-client">
+          <div class="stat-icon books"></div>
+          <div class="stat-info">
+            <h3 id="myRentals">-</h3>
+            <p>My Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-client">
+          <div class="stat-icon pending"></div>
+          <div class="stat-info">
+            <h3 id="pendingRentalsClient">-</h3>
+            <p>Pending Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-client">
+          <div class="stat-icon active"></div>
+          <div class="stat-info">
+            <h3 id="activeRentalsClient">-</h3>
+            <p>Active Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card role-client">
+          <div class="stat-icon rentals"></div>
+          <div class="stat-info">
+            <h3 id="availableBooks">-</h3>
+            <p>Available Books</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+          <!-- Admin actions -->
+          <a href="admin-books.html" class="action-btn role-admin">Manage Books</a>
+          <a href="admin-rentals.html" class="action-btn role-admin">View Rentals</a>
+          <a href="admin-users.html" class="action-btn role-admin">Manage Users</a>
+
+          <!-- Librarian actions -->
+          <a href="librarian-rentals.html" class="action-btn role-librarian">View My Rentals</a>
+
+          <!-- Client actions -->
+          <a href="client-rent-book.html" class="action-btn role-client">Rent a Book</a>
+          <a href="client-my-rentals.html" class="action-btn role-client">View My Rentals</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $(document).ready(function() {
+      requireAuth();
+
+      var role = localStorage.getItem('userRole');
+      if (!role) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Update title and visible sections based on role
+      var $titleEl = $('#dashboardTitle');
+      var $body = $('body');
+
+      function showRole(roleName) {
+        $body.addClass('role-' + roleName);
+        $('.role-admin, .role-librarian, .role-client, .nav-admin, .nav-librarian, .nav-client').hide();
+        $('.role-' + roleName + ', .nav-' + roleName).show();
+      }
+
+      if (role === 'admin') {
+        $titleEl.text('Admin Dashboard');
+        showRole('admin');
+      } else if (role === 'librarian') {
+        $titleEl.text('Librarian Dashboard');
+        showRole('librarian');
+      } else {
+        $titleEl.text('Client Dashboard');
+        showRole('client');
+      }
+
+      // Load dashboard stats
+      function loadStats() {
+        loadDashboardStats()
+          .then(function(stats) {
+            console.log('Dashboard stats loaded:', stats);
+
+            if (role === 'admin') {
+              $('#totalBooks').text(stats.total_books || 0);
+              $('#totalRentals').text(stats.total_rentals || 0);
+              $('#pendingRentals').text(stats.pending_rentals || 0);
+              $('#totalUsers').text(stats.total_users || 0);
+            } else if (role === 'librarian') {
+              $('#assignedRentals').text(stats.assigned_rentals || 0);
+              $('#pendingRentalsLibrarian').text(stats.pending_rentals || 0);
+              $('#activeRentalsLibrarian').text(stats.active_rentals || 0);
+            } else {
+              $('#myRentals').text(stats.my_rentals || 0);
+              $('#pendingRentalsClient').text(stats.pending_rentals || 0);
+              $('#activeRentalsClient').text(stats.active_rentals || 0);
+              $('#availableBooks').text(stats.available_books || 0);
+            }
+          })
+          .catch(function(err) {
+            console.error('Error loading stats:', err);
+            if (err.response && err.response.status === 401) {
+              alert('Session expired. Please log in again.');
+              window.location.href = 'login.html';
+            }
+          });
+      }
+
+      loadStats();
+
+      // Hamburger menu
+      var $hamburger = $('#hamburger');
+      var $navMenu = $('#nav-menu');
+      if ($hamburger.length && $navMenu.length) {
+        $hamburger.on('click', function() {
+          $hamburger.toggleClass('active');
+          $navMenu.toggleClass('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

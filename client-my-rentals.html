@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Rentals - Client - LaraLibraLink</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: #1e293b;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    .book-image {
+      width: 50px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .status-badge {
+      padding: 0.375rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .status-completed {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+      border: 1px solid rgba(107, 114, 128, 0.2);
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      background: #1e40af;
+      transform: translateY(0);
+    }
+
+    .btn-primary:focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.4);
+      outline-offset: 2px;
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1px solid #e2e8f0;
+      outline: none;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+    }
+
+    .btn-secondary:active:not(:disabled) {
+      background: #cbd5e1;
+    }
+
+    .btn-secondary:focus-visible {
+      outline: 3px solid rgba(30, 41, 59, 0.3);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    #extendModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-container {
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      max-width: 400px;
+      width: 90%;
+      margin: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+
+    .form-container h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background: white;
+      color: #1e293b;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 0.875rem;
+      }
+
+      th, td {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .book-image {
+        width: 40px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="client-rent-book.html" class="nav-link">Rent Book</a></li>
+        <li><a href="client-my-rentals.html" class="nav-link active">My Rentals</a></li>
+        <li><a href="profile.html" class="nav-link">Profile</a></li>
+        <li><a href="#" id="logoutBtn" class="nav-link">Logout</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <h1>My Rentals</h1>
+      
+      <div class="table-container">
+        <table id="rentalsTable">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Book Title</th>
+              <th>Librarian</th>
+              <th>Rental Date</th>
+              <th>Return Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="7" style="text-align: center;">Loading rentals...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Extend Rental Modal -->
+  <div id="extendModal">
+    <div class="form-container">
+      <h2>Extend Rental</h2>
+      <form id="extendForm">
+        <div class="form-group">
+          <label>Additional Days *</label>
+          <input type="number" name="additional_days" min="1" required>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Extend</button>
+          <button type="button" class="btn btn-secondary" id="cancelExtendBtn" style="flex: 1;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/rentals.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    $(document).ready(function() {
+      requireAuth();
+      
+      var role = localStorage.getItem('userRole');
+      if (role !== 'client') {
+        alert('Access denied. Client role required.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      var extendingRentalId = null;
+
+      function loadMyRentalsList() {
+        loadMyRentals()
+          .then(function(rentals) {
+            var $tbody = $('#rentalsTable tbody');
+            
+            if (rentals.length === 0) {
+              $tbody.html('<tr><td colspan="7" style="text-align: center;">You have no rentals yet.</td></tr>');
+              return;
+            }
+
+            $tbody.empty();
+            $.each(rentals, function(index, rental) {
+              // Normalize status to lowercase for CSS classes
+              var statusLower = (rental.status || '').toLowerCase();
+              var statusClass = 'status-' + statusLower;
+              
+              // Map status values to appropriate classes
+              if (statusLower === 'approved') {
+                statusClass = 'status-active';
+              } else if (statusLower === 'declined') {
+                statusClass = 'status-unavailable';
+              } else if (statusLower === 'returned') {
+                statusClass = 'status-completed';
+              } else if (statusLower === 'pending') {
+                statusClass = 'status-pending';
+              }
+              
+              // Format status text (capitalize first letter)
+              var statusText = (rental.status || '').charAt(0).toUpperCase() + (rental.status || '').slice(1).toLowerCase();
+              
+              var imageUrl = rental.book_image ? UPLOADS_BASE_URL + '/' + rental.book_image.replace(/^uploads\//, '') : UPLOADS_BASE_URL + '/default.png';
+              var actionButtons = statusLower === 'pending'
+                ? '<button class="btn btn-primary extend-btn" data-id="' + rental.id + '">Extend</button> ' +
+                  '<button class="btn btn-danger cancel-btn" data-id="' + rental.id + '">Cancel</button>'
+                : '-';
+              
+              var $tr = $('<tr>');
+              $tr.html(
+                '<td><img src="' + imageUrl + '" alt="' + rental.book_title + '" class="book-image" onerror="this.src=\'' + UPLOADS_BASE_URL + '/default.png\'"></td>' +
+                '<td>' + rental.book_title + '</td>' +
+                '<td>' + rental.librarian + '</td>' +
+                '<td>' + new Date(rental.rental_date).toLocaleDateString() + '</td>' +
+                '<td>' + new Date(rental.return_date).toLocaleDateString() + '</td>' +
+                '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
+                '<td>' + actionButtons + '</td>'
+              );
+              $tbody.append($tr);
+            });
+          })
+          .catch(function(err) {
+            console.error('Error loading rentals:', err);
+            var $tbody = $('#rentalsTable tbody');
+            $tbody.html('<tr><td colspan="7" style="text-align: center; color: red;">Error loading rentals. Please try again.</td></tr>');
+          });
+      }
+
+      function showExtendModal(id) {
+        extendingRentalId = id;
+        $('#extendModal').css('display', 'flex');
+      }
+
+      function closeExtendModal() {
+        $('#extendModal').hide();
+        extendingRentalId = null;
+        $('#extendForm')[0].reset();
+      }
+
+      // Event Handlers
+      $('#cancelExtendBtn').on('click', closeExtendModal);
+
+      // Extend button
+      $(document).on('click', '.extend-btn', function() {
+        var id = $(this).data('id');
+        showExtendModal(id);
+      });
+
+      // Cancel rental
+      $(document).on('click', '.cancel-btn', function() {
+        var id = $(this).data('id');
+        if (!confirm('Are you sure you want to cancel this rental?')) return;
+        
+        cancelRental(id)
+          .then(function() {
+            alert('Rental cancelled successfully!');
+            loadMyRentalsList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error cancelling rental: ' + msg);
+          });
+      });
+
+      // Extend form submit
+      $('#extendForm').on('submit', function(e) {
+        e.preventDefault();
+        var additionalDays = parseInt($('input[name="additional_days"]').val());
+        
+        extendRental(extendingRentalId, additionalDays)
+          .then(function() {
+            alert('Rental extended successfully!');
+            closeExtendModal();
+            loadMyRentalsList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error extending rental: ' + msg);
+          });
+      });
+
+      loadMyRentalsList();
+
+      // Hamburger menu
+      var $hamburger = $('#hamburger');
+      var $navMenu = $('#nav-menu');
+      if ($hamburger.length && $navMenu.length) {
+        $hamburger.on('click', function() {
+          $hamburger.toggleClass('active');
+          $navMenu.toggleClass('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

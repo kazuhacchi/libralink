@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - LaraLibraLink</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
+      border-color: #2563eb;
+    }
+
+    .stat-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .stat-icon::before {
+      content: '';
+      width: 28px;
+      height: 28px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .stat-icon.rentals::before {
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+    }
+
+    .stat-icon.pending::before {
+      width: 0;
+      height: 0;
+      border: 10px solid transparent;
+      border-top-color: white;
+      border-bottom: none;
+      border-radius: 0;
+    }
+
+    .stat-icon.active::before {
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+    }
+
+    .stat-info h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .stat-info p {
+      color: #64748b;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">LaraLibraLink</a>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="librarian-rentals.html" class="nav-link">Rentals</a></li>
+        <li><a href="profile.html" class="nav-link">Profile</a></li>
+        <li><a href="#" id="logoutBtn" class="nav-link">Logout</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <h1>Librarian Dashboard</h1>
+      
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-icon rentals"></div>
+          <div class="stat-info">
+            <h3 id="assignedRentals">-</h3>
+            <p>Assigned Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon pending"></div>
+          <div class="stat-info">
+            <h3 id="pendingRentals">-</h3>
+            <p>Pending Rentals</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon active"></div>
+          <div class="stat-info">
+            <h3 id="activeRentals">-</h3>
+            <p>Active Rentals</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+          <a href="librarian-rentals.html" class="action-btn">View My Rentals</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    requireAuth();
+    
+    const role = localStorage.getItem('userRole');
+    if (role !== 'librarian') {
+      alert('Access denied. Librarian role required.');
+      window.location.href = 'login.html';
+    }
+
+    async function loadStats() {
+      try {
+        const stats = await loadDashboardStats();
+        document.getElementById('assignedRentals').textContent = stats.assigned_rentals || 0;
+        document.getElementById('pendingRentals').textContent = stats.pending_rentals || 0;
+        document.getElementById('activeRentals').textContent = stats.active_rentals || 0;
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    }
+
+    loadStats();
+
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    if (hamburger && navMenu) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+      });
+    }
+  </script>
+</body>
+</html>
+
