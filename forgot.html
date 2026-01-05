@@ -288,7 +288,7 @@
         <!-- Step 2: Verify OTP -->
         <div id="step-otp" style="display:none;">
           <div class="form-group">
-            <input type="text" id="otpInput" class="form-input" placeholder="Enter OTP" maxlength="6" required>
+            <input type="tel" id="otpInput" class="form-input" placeholder="Enter OTP" maxlength="6" inputmode="numeric" pattern="[0-9]*" required>
             <p id="otpMsg" class="error-message"></p>
           </div>
           <button type="button" id="verifyOtpBtn" class="btn-submit">Verify OTP</button>
