@@ -361,7 +361,7 @@
       
       <div class="profile-header">
         <div class="avatar-container">
-    <img id="avatarImage" class="avatar" src="https://libralink.jhrweb.bytevortexz.com/uploads/profile.png" alt="Profile Avatar" onload="if(typeof UPLOADS_BASE_URL !== 'undefined') this.src = UPLOADS_BASE_URL + '/profile.png';">
+    <img id="avatarImage" class="avatar" src="" alt="Profile Avatar">
     <label class="avatar-upload" title="Change profile photo">
         <i>📷</i>
         <input type="file" id="avatarInput" accept="image/*">
@@ -506,7 +506,7 @@
       $('#email').val(data.email || '');
       
       // Set default avatar URL
-      var avatarUrl = UPLOADS_BASE_URL + '/profile.png';
+      var avatarUrl = API_BASE_URL + '/uploads/profile.png';
 
       // Prefer server-provided avatar URL if available
       if (data.avatar_url) {
@@ -516,7 +516,9 @@
         if (data.avatar_path.indexOf('http') === 0) {
           avatarUrl = data.avatar_path;
         } else {
-          avatarUrl = UPLOADS_BASE_URL + '/' + data.avatar_path.replace(/^uploads\//, '').replace(/^\/+/, '');
+          // Ensure path starts with /uploads/ for the route
+          var cleanPath = data.avatar_path.replace(/^\/+/, '').replace(/^uploads\//, 'uploads/');
+          avatarUrl = API_BASE_URL + '/' + cleanPath;
         }
       }
 
@@ -697,12 +699,14 @@
       .done(function(response) {
         showMessage('Profile picture updated successfully!', 'success');
         // Update avatar image with the server path
-        var avatarUrl = UPLOADS_BASE_URL + '/' + response.avatar_path.replace(/^uploads\//, '').replace(/^\/+/, '');
+        var cleanPath = response.avatar_path.replace(/^\/+/, '').replace(/^uploads\//, 'uploads/');
+        var avatarUrl = API_BASE_URL + '/' + cleanPath;
         $('#avatarImage').attr('src', avatarUrl);
         console.log('Avatar updated to:', avatarUrl);
         // Update user data in localStorage
         if (userData) {
           userData.avatar_path = response.avatar_path;
+          userData.avatar_url = response.avatar_url || avatarUrl;
           localStorage.setItem('userData', JSON.stringify(userData));
         }
       })
