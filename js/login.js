@@ -12,12 +12,15 @@ $(document).ready(function() {
         password: $loginForm.find('input[name="password"]').val()
       };
 
-      $.ajax({
-        url: API_BASE + '/login',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data)
-      })
+$.ajax({
+  url: API_BASE + '/login',
+  method: 'POST',
+  contentType: 'application/json',
+  headers: {
+    'Accept': 'application/json'
+  },
+  data: JSON.stringify(data)
+})
       .done(function(response) {
         // Store token and user info
         localStorage.setItem('authToken', response.token);
