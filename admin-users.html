@@ -340,11 +340,12 @@
             $tbody.empty();
             $.each(users, function(index, user) {
               var $tr = $('<tr>');
+              var roleClass = 'role-' + user.role.toLowerCase();
               $tr.html(
                 '<td>' + user.id + '</td>' +
                 '<td>' + user.username + '</td>' +
                 '<td>' + user.full_name + '</td>' +
-                '<td><span class="status-badge">' + user.role + '</span></td>' +
+                '<td><span class="role-badge ' + roleClass + '">' + user.role + '</span></td>' +
                 '<td>' +
                   '<button class="btn btn-primary edit-user-btn" data-id="' + user.id + '">Edit</button> ' +
                   '<button class="btn btn-danger delete-user-btn" data-id="' + user.id + '">Delete</button>' +
@@ -436,6 +437,7 @@
           userData.email = $('input[name="email"]').val();
           userData.role = $('select[name="role"]').val();
         } else {
+          userData.role = $('select[name="role"]').val();
           if ($('input[name="password"]').val()) {
             userData.password = $('input[name="password"]').val();
           } else {
