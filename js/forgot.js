@@ -6,8 +6,45 @@ var API_URL = API_BASE;
 // Global variables to store data
 var userEmail = '';
 var verifiedOtp = '';
+var resetToken = '';
 
 $(document).ready(function() {
+  // Check for token and email in URL parameters
+  var urlParams = new URLSearchParams(window.location.search);
+  var token = urlParams.get('token');
+  var email = urlParams.get('email');
+  
+  if (token && email) {
+    // Verify token and auto-fill email
+    resetToken = token;
+    userEmail = decodeURIComponent(email);
+    
+    // Verify token is valid
+    $.ajax({
+      url: API_URL + '/forgot-password/verify-token/' + token,
+      method: 'GET'
+    })
+    .done(function(response) {
+      // Token is valid, pre-fill email and show OTP step
+      $('#forgotEmail').val(userEmail).prop('disabled', true);
+      if (window.showStep) {
+        window.showStep('step-otp');
+      } else {
+        $('#step-email').hide();
+        $('#step-otp').show();
+      }
+      showMessage($('#emailMsg'), 'Please enter the OTP sent to your email.', 'success');
+    })
+    .fail(function(jqXHR) {
+      var errorMsg = 'Invalid or expired link. Please request a new OTP.';
+      if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+        errorMsg = jqXHR.responseJSON.error;
+      }
+      showMessage($('#emailMsg'), errorMsg, 'error');
+      // Clear URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    });
+  }
   // DOM elements using jQuery
   var $stepEmail = $('#step-email');
   var $stepOtp = $('#step-otp');
@@ -93,14 +130,21 @@ $(document).ready(function() {
 
     $verifyOtpBtn.prop('disabled', true).text('Verifying...');
     
+    var verifyData = { 
+      email: userEmail, 
+      otp: otp 
+    };
+    
+    // Include token if available (from email link)
+    if (resetToken) {
+      verifyData.token = resetToken;
+    }
+    
     $.ajax({
       url: API_URL + '/forgot-password/verify-otp',
       method: 'POST',
       contentType: 'application/json',
-      data: JSON.stringify({ 
-        email: userEmail, 
-        otp: otp 
-      })
+      data: JSON.stringify(verifyData)
     })
     .done(function(response) {
       // Store the OTP BEFORE showing success message
