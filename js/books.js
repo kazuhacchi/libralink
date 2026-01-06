@@ -21,8 +21,9 @@ function addBook(bookData) {
   formData.append('title', bookData.title);
   formData.append('author', bookData.author);
   formData.append('category', bookData.category);
-  formData.append('rental_price', bookData.rental_price);
-  if (bookData.image && bookData.image.size > 0) {
+  // Ensure rental_price is sent as a number (FormData will convert to string, but Laravel accepts numeric strings)
+  formData.append('rental_price', bookData.rental_price || 0);
+  if (bookData.image && bookData.image instanceof File && bookData.image.size > 0) {
     formData.append('image', bookData.image);
   }
 
@@ -47,8 +48,9 @@ function updateBook(id, bookData) {
   formData.append('title', bookData.title);
   formData.append('author', bookData.author);
   formData.append('category', bookData.category);
-  formData.append('rental_price', bookData.rental_price);
-  if (bookData.image && bookData.image.size > 0) {
+  // Ensure rental_price is sent as a number (FormData will convert to string, but Laravel accepts numeric strings)
+  formData.append('rental_price', bookData.rental_price || 0);
+  if (bookData.image && bookData.image instanceof File && bookData.image.size > 0) {
     formData.append('image', bookData.image);
   }
 
