@@ -141,3 +141,16 @@ function markRentalReturned(id) {
     throw err;
   });
 }
+
+// Mark rental as penalty (Librarian)
+function markRentalPenalty(id) {
+  return authAxios({
+    method: 'POST',
+    url: RENTALS_API_BASE + '/rentals/' + id + '/penalty'
+  }).then(function(response) {
+    return response.data;
+  }).catch(function(err) {
+    console.error('Error marking rental as penalty:', err);
+    throw err;
+  });
+}
