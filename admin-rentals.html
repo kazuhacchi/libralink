@@ -257,7 +257,7 @@
               return;
             }
 
-            // Define status order priority
+            // Define status order priority - exact order: Pending, Active, Returned, Penalty, Cancelled, Declined
             var statusOrder = {
               'pending': 1,
               'approved': 2,  // Treat approved as active for sorting
