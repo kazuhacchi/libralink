@@ -38,10 +38,7 @@ function addBook(bookDataOrFormData) {
   return authAxios({
     method: 'POST',
     url: API_BASE + '/books',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+    data: formData
   }).then(function(response) {
     return response.data;
   }).catch(function(err) {
@@ -73,10 +70,7 @@ function updateBook(id, bookDataOrFormData) {
   return authAxios({
     method: 'POST',
     url: API_BASE + '/books/' + id + '/update',
-    data: formData,
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+    data: formData
   }).then(function(response) {
     return response.data;
   }).catch(function(err) {
