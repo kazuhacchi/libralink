@@ -81,6 +81,18 @@
       border: 1px solid rgba(107, 114, 128, 0.2);
     }
 
+    .status-penalty {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .status-unavailable {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
     .btn {
       padding: 0.5rem 1rem;
       border-radius: 8px;
@@ -245,6 +257,33 @@
               return;
             }
 
+            // Define status order priority
+            var statusOrder = {
+              'pending': 1,
+              'approved': 2,  // Treat approved as active for sorting
+              'active': 2,
+              'returned': 3,
+              'penalty': 4,
+              'cancelled': 5,
+              'declined': 6
+            };
+
+            // Sort rentals by status order, then by ID (newest first)
+            rentals.sort(function(a, b) {
+              var statusA = (a.status || '').toLowerCase();
+              var statusB = (b.status || '').toLowerCase();
+              
+              var priorityA = statusOrder[statusA] || 99;
+              var priorityB = statusOrder[statusB] || 99;
+              
+              if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+              }
+              
+              // If same status, sort by ID descending (newest first)
+              return b.id - a.id;
+            });
+
             $tbody.empty();
             $.each(rentals, function(index, rental) {
               // Normalize status to lowercase for CSS classes
@@ -260,6 +299,12 @@
                 statusClass = 'status-completed';
               } else if (statusLower === 'pending') {
                 statusClass = 'status-pending';
+              } else if (statusLower === 'penalty') {
+                statusClass = 'status-penalty';
+              } else if (statusLower === 'active') {
+                statusClass = 'status-active';
+              } else if (statusLower === 'cancelled') {
+                statusClass = 'status-unavailable';
               }
               
               // Format status text (capitalize first letter)
