@@ -232,17 +232,81 @@
         font-size: 1.75rem;
       }
 
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
       table {
+        min-width: 800px;
         font-size: 0.875rem;
       }
 
       th, td {
         padding: 0.75rem 0.5rem;
+        white-space: nowrap;
       }
 
       .book-image {
         width: 40px;
         height: 60px;
+      }
+
+      .form-container {
+        max-width: 95%;
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      #addBookBtn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      table {
+        min-width: 700px;
+        font-size: 0.8rem;
+      }
+
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+
+      .book-image {
+        width: 30px;
+        height: 45px;
+      }
+
+      .form-container {
+        padding: 1rem;
+        margin: 0.5rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.25rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem;
       }
     }
   </style>
