@@ -43,6 +43,65 @@
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: var(--spacing-xl);
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-menu li a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      position: relative;
+      padding: var(--spacing-xs) 0;
+    }
+
+    .nav-menu li a:hover {
+      color: var(--primary);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: var(--spacing-xs);
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: var(--transition);
+      border-radius: var(--radius-full);
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
     /* Main Content */
     main {
       min-height: 100vh;
@@ -281,11 +340,54 @@
     /* Responsive */
     @media (max-width: 768px) {
       nav {
-        padding: 1rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+      }
+
+      .nav-container {
+        padding: 0;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+      }
+
+      .hamburger {
+        display: flex;
       }
 
       .nav-menu {
-        gap: 1.5rem;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        flex-direction: column;
+        padding: var(--spacing-lg);
+        gap: var(--spacing-md);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-slow);
+        box-shadow: var(--shadow-lg);
+        border-top: 1px solid var(--border);
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+      }
+
+      .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .nav-menu li {
+        width: 100%;
+      }
+
+      .nav-menu li a {
+        display: block;
+        padding: var(--spacing-sm) var(--spacing-md);
+        width: 100%;
       }
 
       .profile-container {
@@ -300,9 +402,25 @@
         width: 100px;
         height: 100px;
       }
+
+      main {
+        padding-top: 5rem;
+      }
     }
 
     @media (max-width: 480px) {
+      nav {
+        padding: var(--spacing-xs) var(--spacing-sm);
+      }
+
+      .logo {
+        font-size: 1.125rem;
+      }
+
+      .nav-menu {
+        top: 55px;
+      }
+
       .profile-container {
         padding: 2rem 1.5rem;
       }
@@ -323,6 +441,10 @@
       .avatar-upload {
         width: 32px;
         height: 32px;
+      }
+
+      main {
+        padding-top: 4.5rem;
       }
     }
 
@@ -347,9 +469,14 @@
   <nav>
     <div class="nav-container">
       <a href="#" class="logo">LaraLibraLink</a>
-      <ul class="nav-menu">
+      <ul class="nav-menu" id="nav-menu">
         <li><a href="#" id="backToDashboardLink">← Back to Dashboard</a></li>
       </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </nav>
 
@@ -738,6 +865,22 @@
           $messageEl.hide();
         }, 3000);
       }
+    }
+
+    // Hamburger menu toggle
+    var $hamburger = $('#hamburger');
+    var $navMenu = $('#nav-menu');
+    if ($hamburger.length && $navMenu.length) {
+      $hamburger.on('click', function() {
+        $hamburger.toggleClass('active');
+        $navMenu.toggleClass('active');
+      });
+
+      // Close menu when clicking on a link
+      $navMenu.find('a').on('click', function() {
+        $hamburger.removeClass('active');
+        $navMenu.removeClass('active');
+      });
     }
   </script>
 </body>
