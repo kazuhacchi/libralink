@@ -450,33 +450,61 @@
       // Form submit
       $('#bookForm').on('submit', function(e) {
         e.preventDefault();
-        var formData = new FormData(this);
+        
+        // Get form element directly
+        var formElement = document.getElementById('bookForm');
+        if (!formElement) {
+          alert('Form not found');
+          return;
+        }
+        
+        // Get all form values explicitly
+        var title = $('input[name="title"]').val();
+        var author = $('input[name="author"]').val();
+        var category = $('input[name="category"]').val();
+        var rentalPrice = $('input[name="rental_price"]').val();
+        var imageFile = $('input[name="image"]')[0].files[0];
         
         // Validate required fields before sending
-        var title = formData.get('title');
-        var author = formData.get('author');
-        var category = formData.get('category');
-        var rentalPrice = formData.get('rental_price');
-        
         if (!title || !title.trim()) {
           alert('Please enter a title');
+          $('input[name="title"]').focus();
           return;
         }
         if (!author || !author.trim()) {
           alert('Please enter an author');
+          $('input[name="author"]').focus();
           return;
         }
         if (!category || !category.trim()) {
           alert('Please enter a category');
+          $('input[name="category"]').focus();
           return;
         }
         if (!rentalPrice || isNaN(parseFloat(rentalPrice)) || parseFloat(rentalPrice) < 0) {
           alert('Please enter a valid rental price');
+          $('input[name="rental_price"]').focus();
           return;
         }
         
-        // Ensure rental_price is a valid number
-        formData.set('rental_price', parseFloat(rentalPrice) || 0);
+        // Create FormData and explicitly append all fields
+        var formData = new FormData();
+        formData.append('title', title.trim());
+        formData.append('author', author.trim());
+        formData.append('category', category.trim());
+        formData.append('rental_price', parseFloat(rentalPrice));
+        if (imageFile) {
+          formData.append('image', imageFile);
+        }
+        
+        // Debug: log form data
+        console.log('Sending form data:', {
+          title: title.trim(),
+          author: author.trim(),
+          category: category.trim(),
+          rental_price: parseFloat(rentalPrice),
+          hasImage: !!imageFile
+        });
 
         var promise;
         if (editingBookId) {
