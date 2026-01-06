@@ -21,15 +21,12 @@
       border-radius: 12px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
 
     thead {
@@ -84,6 +81,34 @@
       border: 1px solid rgba(107, 114, 128, 0.2);
     }
 
+    .status-penalty {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:active:not(:disabled) {
+      background: #b91c1c;
+      transform: translateY(0);
+    }
+
+    .btn-danger:focus-visible {
+      outline: 3px solid rgba(239, 68, 68, 0.4);
+      outline-offset: 2px;
+    }
+
     .btn {
       padding: 0.5rem 1rem;
       border-radius: 8px;
@@ -125,36 +150,50 @@
     }
 
     @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
       .table-container {
-        scrollbar-width: thin;
-        scrollbar-color: #e2e8f0 #f8fafc;
-      }
-
-      .table-container::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-track {
-        background: #f8fafc;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
+        min-width: 900px;
         font-size: 0.875rem;
-        min-width: 600px;
       }
 
       th, td {
         padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+      }
+
+      .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      table {
+        min-width: 800px;
+        font-size: 0.8rem;
+      }
+
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+
+      .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        width: 100%;
+        margin-bottom: 0.25rem;
       }
     }
   </style>
@@ -248,6 +287,8 @@
                 statusClass = 'status-pending';
               } else if (statusLower === 'active') {
                 statusClass = 'status-active';
+              } else if (statusLower === 'penalty') {
+                statusClass = 'status-penalty';
               }
               
               // Format status text (capitalize first letter)
@@ -257,7 +298,11 @@
               if (statusLower === 'approved') {
                 actionButtons = '<button class="btn btn-primary release-btn" data-id="' + rental.id + '">Release</button>';
               } else if (statusLower === 'active') {
-                actionButtons = '<button class="btn btn-primary return-btn" data-id="' + rental.id + '">Mark as Returned</button>';
+                actionButtons = '<button class="btn btn-primary return-btn" data-id="' + rental.id + '">Mark as Returned</button> ' +
+                                '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
+              } else if (statusLower !== 'returned' && statusLower !== 'declined' && statusLower !== 'cancelled') {
+                // Show penalty button for other statuses that can be penalized (pending, approved, etc.)
+                actionButtons = '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
               }
               
               var $tr = $('<tr>');
@@ -309,6 +354,22 @@
           .catch(function(err) {
             var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
             alert('Error marking rental as returned: ' + msg);
+          });
+      });
+
+      // Mark as penalty
+      $(document).on('click', '.penalty-btn', function() {
+        var id = $(this).data('id');
+        if (!confirm('Are you sure you want to mark this rental as penalty?')) return;
+        
+        markRentalPenalty(id)
+          .then(function() {
+            alert('Rental status changed to penalty successfully!');
+            loadRentalsList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error marking rental as penalty: ' + msg);
           });
       });
 
