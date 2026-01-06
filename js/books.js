@@ -16,15 +16,23 @@ function loadBooks() {
 }
 
 // Add a new book
-function addBook(bookData) {
-  var formData = new FormData();
-  formData.append('title', bookData.title);
-  formData.append('author', bookData.author);
-  formData.append('category', bookData.category);
-  // Ensure rental_price is sent as a number (FormData will convert to string, but Laravel accepts numeric strings)
-  formData.append('rental_price', bookData.rental_price || 0);
-  if (bookData.image && bookData.image instanceof File && bookData.image.size > 0) {
-    formData.append('image', bookData.image);
+// Accepts either FormData directly or a bookData object
+function addBook(bookDataOrFormData) {
+  var formData;
+  
+  if (bookDataOrFormData instanceof FormData) {
+    // If FormData is passed directly, use it
+    formData = bookDataOrFormData;
+  } else {
+    // Otherwise, create FormData from object
+    formData = new FormData();
+    formData.append('title', bookDataOrFormData.title || '');
+    formData.append('author', bookDataOrFormData.author || '');
+    formData.append('category', bookDataOrFormData.category || '');
+    formData.append('rental_price', bookDataOrFormData.rental_price || 0);
+    if (bookDataOrFormData.image && bookDataOrFormData.image instanceof File && bookDataOrFormData.image.size > 0) {
+      formData.append('image', bookDataOrFormData.image);
+    }
   }
 
   return authAxios({
@@ -43,15 +51,23 @@ function addBook(bookData) {
 }
 
 // Update a book
-function updateBook(id, bookData) {
-  var formData = new FormData();
-  formData.append('title', bookData.title);
-  formData.append('author', bookData.author);
-  formData.append('category', bookData.category);
-  // Ensure rental_price is sent as a number (FormData will convert to string, but Laravel accepts numeric strings)
-  formData.append('rental_price', bookData.rental_price || 0);
-  if (bookData.image && bookData.image instanceof File && bookData.image.size > 0) {
-    formData.append('image', bookData.image);
+// Accepts either FormData directly or a bookData object
+function updateBook(id, bookDataOrFormData) {
+  var formData;
+  
+  if (bookDataOrFormData instanceof FormData) {
+    // If FormData is passed directly, use it
+    formData = bookDataOrFormData;
+  } else {
+    // Otherwise, create FormData from object
+    formData = new FormData();
+    formData.append('title', bookDataOrFormData.title || '');
+    formData.append('author', bookDataOrFormData.author || '');
+    formData.append('category', bookDataOrFormData.category || '');
+    formData.append('rental_price', bookDataOrFormData.rental_price || 0);
+    if (bookDataOrFormData.image && bookDataOrFormData.image instanceof File && bookDataOrFormData.image.size > 0) {
+      formData.append('image', bookDataOrFormData.image);
+    }
   }
 
   return authAxios({
