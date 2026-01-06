@@ -360,12 +360,22 @@
         if (!confirm('Are you sure you want to mark this rental as penalty?')) return;
         
         markRentalPenalty(id)
-          .then(function() {
+          .then(function(response) {
             alert('Rental status changed to penalty successfully!');
             loadRentalsList();
           })
           .catch(function(err) {
-            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            console.error('Full error object:', err);
+            var msg = 'Unknown error';
+            if (err && err.response) {
+              if (err.response.data && err.response.data.message) {
+                msg = err.response.data.message;
+              } else if (err.response.status) {
+                msg = 'HTTP ' + err.response.status + ': ' + (err.response.statusText || 'Request failed');
+              }
+            } else if (err && err.message) {
+              msg = err.message;
+            }
             alert('Error marking rental as penalty: ' + msg);
           });
       });
