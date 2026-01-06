@@ -185,8 +185,13 @@
     }
 
     @media (max-width: 768px) {
+      .auth-container {
+        padding: 1rem;
+      }
+
       .auth-card {
         padding: 2rem 1.5rem;
+        max-width: 100%;
       }
 
       .form-row {
@@ -195,6 +200,29 @@
 
       .auth-header h1 {
         font-size: 1.75rem;
+      }
+
+      .auth-header p {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 0.5rem;
+      }
+
+      .auth-card {
+        padding: 1.5rem 1rem;
+      }
+
+      .auth-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 0.875rem;
       }
     }
   </style>
