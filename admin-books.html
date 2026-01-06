@@ -24,15 +24,12 @@
       border-radius: 12px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
 
     thead {
@@ -235,32 +232,8 @@
         font-size: 1.75rem;
       }
 
-      .table-container {
-        scrollbar-width: thin;
-        scrollbar-color: #e2e8f0 #f8fafc;
-      }
-
-      .table-container::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-track {
-        background: #f8fafc;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
-      }
-
       table {
         font-size: 0.875rem;
-        min-width: 600px;
       }
 
       th, td {
@@ -479,11 +452,15 @@
         e.preventDefault();
         var formData = new FormData(this);
         
+        // Get rental_price and convert to number
+        var rentalPrice = formData.get('rental_price');
+        var rentalPriceNum = rentalPrice ? parseFloat(rentalPrice) : 0;
+        
         var bookData = {
           title: formData.get('title'),
           author: formData.get('author'),
           category: formData.get('category'),
-          rental_price: formData.get('rental_price'),
+          rental_price: rentalPriceNum,
           image: formData.get('image')
         };
 
@@ -501,8 +478,24 @@
             loadBooksList();
           })
           .catch(function(err) {
-            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
-            alert('Error saving book: ' + msg);
+            var msg = 'Error saving book: ';
+            if (err.response && err.response.data) {
+              if (err.response.data.errors) {
+                // Show validation errors
+                var errorMessages = [];
+                for (var field in err.response.data.errors) {
+                  errorMessages.push(field + ': ' + err.response.data.errors[field].join(', '));
+                }
+                msg += errorMessages.join('\n');
+              } else if (err.response.data.message) {
+                msg += err.response.data.message;
+              } else {
+                msg += err.message || 'Unknown error';
+              }
+            } else {
+              msg += err.message || 'Unknown error';
+            }
+            alert(msg);
           });
       });
 
