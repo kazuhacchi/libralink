@@ -452,23 +452,37 @@
         e.preventDefault();
         var formData = new FormData(this);
         
-        // Get rental_price and convert to number
+        // Validate required fields before sending
+        var title = formData.get('title');
+        var author = formData.get('author');
+        var category = formData.get('category');
         var rentalPrice = formData.get('rental_price');
-        var rentalPriceNum = rentalPrice ? parseFloat(rentalPrice) : 0;
         
-        var bookData = {
-          title: formData.get('title'),
-          author: formData.get('author'),
-          category: formData.get('category'),
-          rental_price: rentalPriceNum,
-          image: formData.get('image')
-        };
+        if (!title || !title.trim()) {
+          alert('Please enter a title');
+          return;
+        }
+        if (!author || !author.trim()) {
+          alert('Please enter an author');
+          return;
+        }
+        if (!category || !category.trim()) {
+          alert('Please enter a category');
+          return;
+        }
+        if (!rentalPrice || isNaN(parseFloat(rentalPrice)) || parseFloat(rentalPrice) < 0) {
+          alert('Please enter a valid rental price');
+          return;
+        }
+        
+        // Ensure rental_price is a valid number
+        formData.set('rental_price', parseFloat(rentalPrice) || 0);
 
         var promise;
         if (editingBookId) {
-          promise = updateBook(editingBookId, bookData);
+          promise = updateBook(editingBookId, formData);
         } else {
-          promise = addBook(bookData);
+          promise = addBook(formData);
         }
 
         promise
