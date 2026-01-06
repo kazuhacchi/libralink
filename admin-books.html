@@ -342,7 +342,7 @@
         <table id="booksTable">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Book Code</th>
               <th>Image</th>
               <th>Title</th>
               <th>Author</th>
@@ -431,8 +431,9 @@
               var statusText = book.is_available ? 'Available' : 'Unavailable';
               
               var $tr = $('<tr>');
+              var bookCode = book.book_code || ('BK-' + String(book.id).padStart(4, '0'));
               $tr.html(
-                '<td>' + book.id + '</td>' +
+                '<td>' + bookCode + '</td>' +
                 '<td><img src="' + imageUrl + '" alt="' + book.title + '" class="book-image" onerror="this.src=\'' + UPLOADS_BASE_URL + '/default.png\'"></td>' +
                 '<td>' + book.title + '</td>' +
                 '<td>' + book.author + '</td>' +
