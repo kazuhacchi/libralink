@@ -24,15 +24,12 @@
       border-radius: 12px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
 
     thead {
@@ -212,36 +209,75 @@
         gap: 1rem;
       }
 
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
       .table-container {
-        scrollbar-width: thin;
-        scrollbar-color: #e2e8f0 #f8fafc;
-      }
-
-      .table-container::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-track {
-        background: #f8fafc;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
-        font-size: 0.875rem;
         min-width: 600px;
+        font-size: 0.875rem;
       }
 
       th, td {
         padding: 0.75rem 0.5rem;
+        white-space: nowrap;
+      }
+
+      .form-container {
+        max-width: 95%;
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      #addUserBtn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      table {
+        min-width: 500px;
+        font-size: 0.8rem;
+      }
+
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+
+      .form-container {
+        padding: 1rem;
+        margin: 0.5rem;
+      }
+
+      .form-container h2 {
+        font-size: 1.25rem;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem;
       }
     }
   </style>
