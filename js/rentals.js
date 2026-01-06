@@ -144,13 +144,22 @@ function markRentalReturned(id) {
 
 // Mark rental as penalty (Librarian)
 function markRentalPenalty(id) {
+  var url = RENTALS_API_BASE + '/rentals/' + id + '/penalty';
+  console.log('Calling penalty API:', url);
   return authAxios({
     method: 'POST',
-    url: RENTALS_API_BASE + '/rentals/' + id + '/penalty'
+    url: url
   }).then(function(response) {
+    console.log('Penalty API success:', response);
     return response.data;
   }).catch(function(err) {
     console.error('Error marking rental as penalty:', err);
+    console.error('Error details:', {
+      message: err.message,
+      status: err.response ? err.response.status : 'N/A',
+      data: err.response ? err.response.data : 'N/A',
+      url: url
+    });
     throw err;
   });
 }
