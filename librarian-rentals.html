@@ -300,9 +300,6 @@
               } else if (statusLower === 'active') {
                 actionButtons = '<button class="btn btn-primary return-btn" data-id="' + rental.id + '">Mark as Returned</button> ' +
                                 '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
-              } else if (statusLower !== 'returned' && statusLower !== 'declined' && statusLower !== 'cancelled') {
-                // Show penalty button for other statuses that can be penalized (pending, approved, etc.)
-                actionButtons = '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
               }
               
               var $tr = $('<tr>');
