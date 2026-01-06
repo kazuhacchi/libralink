@@ -54,21 +54,27 @@ function authAxios(config) {
     config.headers['Authorization'] = 'Bearer ' + token;
   }
   
+  // Check if FormData is being sent
+  var isFormData = config.data instanceof FormData;
+  
   // Convert axios-style config to jQuery ajax config
   var ajaxConfig = {
     url: config.url,
     method: config.method || 'GET',
-    headers: config.headers,
-    contentType: config.headers['Content-Type'] === 'multipart/form-data' ? false : 'application/json',
-    processData: config.headers['Content-Type'] === 'multipart/form-data' ? false : true
+    headers: {},
+    contentType: isFormData ? false : 'application/json',
+    processData: !isFormData
   };
+  
+  // Only add Authorization header (remove Content-Type for FormData)
+  if (token) {
+    ajaxConfig.headers['Authorization'] = 'Bearer ' + token;
+  }
   
   // Handle data
   if (config.data) {
-    if (config.data instanceof FormData) {
+    if (isFormData) {
       ajaxConfig.data = config.data;
-      ajaxConfig.contentType = false;
-      ajaxConfig.processData = false;
     } else if (typeof config.data === 'object') {
       ajaxConfig.data = JSON.stringify(config.data);
       ajaxConfig.contentType = 'application/json';
