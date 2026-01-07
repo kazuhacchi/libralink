@@ -283,6 +283,8 @@
                 statusClass = 'status-unavailable';
               } else if (statusLower === 'returned') {
                 statusClass = 'status-completed';
+              } else if (statusLower === 'completed') {
+                statusClass = 'status-completed';
               } else if (statusLower === 'pending') {
                 statusClass = 'status-pending';
               } else if (statusLower === 'active') {
@@ -300,6 +302,8 @@
               } else if (statusLower === 'active') {
                 actionButtons = '<button class="btn btn-primary return-btn" data-id="' + rental.id + '">Mark as Returned</button> ' +
                                 '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
+              } else if (statusLower === 'returned') {
+                actionButtons = '<button class="btn btn-primary completed-btn" data-id="' + rental.id + '">Mark as Completed</button>';
               }
               
               var $tr = $('<tr>');
@@ -351,6 +355,22 @@
           .catch(function(err) {
             var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
             alert('Error marking rental as returned: ' + msg);
+          });
+      });
+
+      // Mark as completed
+      $(document).on('click', '.completed-btn', function() {
+        var id = $(this).data('id');
+        if (!confirm('Are you sure you want to mark this rental as completed?')) return;
+        
+        markRentalCompleted(id)
+          .then(function() {
+            alert('Rental marked as completed successfully!');
+            loadRentalsList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error marking rental as completed: ' + msg);
           });
       });
 
