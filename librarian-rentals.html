@@ -226,6 +226,7 @@
             <tr>
               <th>Rental ID</th>
               <th>Client Name</th>
+              <th>Book Code</th>
               <th>Book Title</th>
               <th>Rental Date</th>
               <th>Return Date</th>
@@ -235,7 +236,7 @@
           </thead>
           <tbody>
             <tr>
-              <td colspan="7" style="text-align: center;">Loading rentals...</td>
+              <td colspan="8" style="text-align: center;">Loading rentals...</td>
             </tr>
           </tbody>
         </table>
@@ -266,7 +267,7 @@
             var $tbody = $('#rentalsTable tbody');
             
             if (rentals.length === 0) {
-              $tbody.html('<tr><td colspan="7" style="text-align: center;">No rentals assigned to you.</td></tr>');
+              $tbody.html('<tr><td colspan="8" style="text-align: center;">No rentals assigned to you.</td></tr>');
               return;
             }
 
@@ -314,6 +315,7 @@
               $tr.html(
                 '<td>' + rental.id + '</td>' +
                 '<td>' + rental.client_name + '</td>' +
+                '<td>' + (rental.book_code || 'N/A') + '</td>' +
                 '<td>' + rental.book_title + '</td>' +
                 '<td>' + new Date(rental.rental_date).toLocaleDateString() + '</td>' +
                 '<td>' + new Date(rental.return_date).toLocaleDateString() + '</td>' +
