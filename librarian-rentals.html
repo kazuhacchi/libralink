@@ -291,6 +291,8 @@
                 statusClass = 'status-active';
               } else if (statusLower === 'penalty') {
                 statusClass = 'status-penalty';
+              } else if (statusLower === 'paid') {
+                statusClass = 'status-completed';
               }
               
               // Format status text (capitalize first letter)
@@ -304,6 +306,8 @@
                                 '<button class="btn btn-danger penalty-btn" data-id="' + rental.id + '">Penalty</button>';
               } else if (statusLower === 'returned') {
                 actionButtons = '<button class="btn btn-primary completed-btn" data-id="' + rental.id + '">Mark as Completed</button>';
+              } else if (statusLower === 'penalty') {
+                actionButtons = '<button class="btn btn-primary paid-btn" data-id="' + rental.id + '">Mark as Paid</button>';
               }
               
               var $tr = $('<tr>');
@@ -371,6 +375,22 @@
           .catch(function(err) {
             var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
             alert('Error marking rental as completed: ' + msg);
+          });
+      });
+
+      // Mark as paid
+      $(document).on('click', '.paid-btn', function() {
+        var id = $(this).data('id');
+        if (!confirm('Are you sure you want to mark this rental as paid?')) return;
+        
+        markRentalPaid(id)
+          .then(function() {
+            alert('Rental marked as paid successfully!');
+            loadRentalsList();
+          })
+          .catch(function(err) {
+            var msg = err.response && err.response.data && err.response.data.message ? err.response.data.message : err.message;
+            alert('Error marking rental as paid: ' + msg);
           });
       });
 
