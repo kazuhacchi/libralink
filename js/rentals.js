@@ -155,6 +155,19 @@ function markRentalCompleted(id) {
   });
 }
 
+// Mark rental as paid (Librarian)
+function markRentalPaid(id) {
+  return authAxios({
+    method: 'POST',
+    url: RENTALS_API_BASE + '/rentals/' + id + '/mark-paid'
+  }).then(function(response) {
+    return response.data;
+  }).catch(function(err) {
+    console.error('Error marking rental as paid:', err);
+    throw err;
+  });
+}
+
 // Mark rental as penalty (Librarian)
 function markRentalPenalty(id) {
   var url = RENTALS_API_BASE + '/rentals/' + id + '/penalty';
