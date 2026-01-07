@@ -21,15 +21,12 @@
       border-radius: 12px;
       border: 1px solid #e2e8f0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
 
     thead {
@@ -212,41 +209,60 @@
     }
 
     @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
       .table-container {
-        scrollbar-width: thin;
-        scrollbar-color: #e2e8f0 #f8fafc;
-      }
-
-      .table-container::-webkit-scrollbar {
-        height: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-track {
-        background: #f8fafc;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb {
-        background: #e2e8f0;
-        border-radius: 8px;
-      }
-
-      .table-container::-webkit-scrollbar-thumb:hover {
-        background: #cbd5e1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
+        min-width: 800px;
         font-size: 0.875rem;
-        min-width: 600px;
       }
 
       th, td {
         padding: 0.75rem 0.5rem;
+        white-space: nowrap;
       }
 
       .book-image {
         width: 40px;
         height: 60px;
+      }
+
+      .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      table {
+        min-width: 700px;
+        font-size: 0.8rem;
+      }
+
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+
+      .book-image {
+        width: 30px;
+        height: 45px;
+      }
+
+      .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+        width: 100%;
+        margin-bottom: 0.25rem;
       }
     }
   </style>
@@ -279,6 +295,7 @@
           <thead>
             <tr>
               <th>Image</th>
+              <th>Book Code</th>
               <th>Book Title</th>
               <th>Librarian</th>
               <th>Rental Date</th>
@@ -289,7 +306,7 @@
           </thead>
           <tbody>
             <tr>
-              <td colspan="7" style="text-align: center;">Loading rentals...</td>
+              <td colspan="8" style="text-align: center;">Loading rentals...</td>
             </tr>
           </tbody>
         </table>
@@ -339,7 +356,7 @@
             var $tbody = $('#rentalsTable tbody');
             
             if (rentals.length === 0) {
-              $tbody.html('<tr><td colspan="7" style="text-align: center;">You have no rentals yet.</td></tr>');
+              $tbody.html('<tr><td colspan="8" style="text-align: center;">You have no rentals yet.</td></tr>');
               return;
             }
 
@@ -372,6 +389,7 @@
               var $tr = $('<tr>');
               $tr.html(
                 '<td><img src="' + imageUrl + '" alt="' + rental.book_title + '" class="book-image" onerror="this.src=\'' + UPLOADS_BASE_URL + '/default.png\'"></td>' +
+                '<td>' + (rental.book_code || 'N/A') + '</td>' +
                 '<td>' + rental.book_title + '</td>' +
                 '<td>' + rental.librarian + '</td>' +
                 '<td>' + new Date(rental.rental_date).toLocaleDateString() + '</td>' +
