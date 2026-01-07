@@ -142,6 +142,19 @@ function markRentalReturned(id) {
   });
 }
 
+// Mark rental as completed (Librarian)
+function markRentalCompleted(id) {
+  return authAxios({
+    method: 'POST',
+    url: RENTALS_API_BASE + '/rentals/' + id + '/mark-completed'
+  }).then(function(response) {
+    return response.data;
+  }).catch(function(err) {
+    console.error('Error marking rental as completed:', err);
+    throw err;
+  });
+}
+
 // Mark rental as penalty (Librarian)
 function markRentalPenalty(id) {
   var url = RENTALS_API_BASE + '/rentals/' + id + '/penalty';
