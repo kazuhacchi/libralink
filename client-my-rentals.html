@@ -372,15 +372,15 @@
               return;
             }
 
-            // Define status order priority - proper rental lifecycle order
+            // Define status order priority - client-focused order (prioritize what needs attention)
             var statusOrder = {
-              'pending': 1,      // Waiting for approval
-              'approved': 2,    // Approved but not yet released
-              'active': 3,      // Currently rented out
-              'returned': 4,    // Book returned but not yet completed
-              'penalty': 5,     // Overdue/penalty status
-              'paid': 6,        // Penalty paid
-              'completed': 7,   // Fully completed rental
+              'pending': 1,      // Waiting for approval (needs attention)
+              'approved': 2,    // Approved but not yet released (action needed)
+              'active': 3,      // Currently rented out (most important)
+              'penalty': 4,     // Overdue/penalty status (urgent - needs attention)
+              'returned': 5,    // Book returned but not yet completed
+              'paid': 6,        // Penalty paid (resolved)
+              'completed': 7,   // Fully completed rental (finished)
               'cancelled': 8,   // Cancelled by client
               'declined': 9     // Declined by admin
             };
