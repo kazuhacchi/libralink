@@ -102,8 +102,31 @@
     }
 
     @media (max-width: 768px) {
+      .page-header h1 {
+        font-size: 1.75rem;
+      }
+
       .form-container {
         padding: 2rem 1.5rem;
+        max-width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .form-container {
+        padding: 1.5rem 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.25rem;
       }
     }
   </style>
@@ -218,7 +241,7 @@
             $.each(availableBooks, function(index, book) {
               var $option = $('<option>')
                 .val(book.id)
-                .text(book.title + ' by ' + book.author + ' - ₱' + parseFloat(book.rental_price).toFixed(2) + '/day');
+                .text((book.book_code || 'ID: ' + book.id) + ' - ' + book.title + ' by ' + book.author + ' - ₱' + parseFloat(book.rental_price).toFixed(2) + '/day');
               $select.append($option);
             });
           })
