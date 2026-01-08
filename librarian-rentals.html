@@ -271,6 +271,35 @@
               return;
             }
 
+            // Define status order priority - proper rental lifecycle order
+            var statusOrder = {
+              'pending': 1,      // Waiting for approval
+              'approved': 2,    // Approved but not yet released
+              'active': 3,      // Currently rented out
+              'returned': 4,    // Book returned but not yet completed
+              'penalty': 5,     // Overdue/penalty status
+              'paid': 6,        // Penalty paid
+              'completed': 7,   // Fully completed rental
+              'cancelled': 8,   // Cancelled by client
+              'declined': 9     // Declined by admin
+            };
+
+            // Sort rentals by status order, then by ID (newest first)
+            rentals.sort(function(a, b) {
+              var statusA = (a.status || '').toLowerCase();
+              var statusB = (b.status || '').toLowerCase();
+              
+              var priorityA = statusOrder[statusA] || 99;
+              var priorityB = statusOrder[statusB] || 99;
+              
+              if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+              }
+              
+              // If same status, sort by ID descending (newest first)
+              return b.id - a.id;
+            });
+
             $tbody.empty();
             $.each(rentals, function(index, rental) {
               // Normalize status to lowercase for CSS classes
@@ -278,22 +307,24 @@
               var statusClass = 'status-' + statusLower;
               
               // Map status values to appropriate classes
-              if (statusLower === 'approved') {
-                statusClass = 'status-active';
-              } else if (statusLower === 'declined') {
-                statusClass = 'status-unavailable';
-              } else if (statusLower === 'returned') {
-                statusClass = 'status-completed';
-              } else if (statusLower === 'completed') {
-                statusClass = 'status-completed';
-              } else if (statusLower === 'pending') {
+              if (statusLower === 'pending') {
                 statusClass = 'status-pending';
+              } else if (statusLower === 'approved') {
+                statusClass = 'status-active';
               } else if (statusLower === 'active') {
                 statusClass = 'status-active';
+              } else if (statusLower === 'returned') {
+                statusClass = 'status-completed';
               } else if (statusLower === 'penalty') {
                 statusClass = 'status-penalty';
               } else if (statusLower === 'paid') {
                 statusClass = 'status-completed';
+              } else if (statusLower === 'completed') {
+                statusClass = 'status-completed';
+              } else if (statusLower === 'cancelled') {
+                statusClass = 'status-unavailable';
+              } else if (statusLower === 'declined') {
+                statusClass = 'status-unavailable';
               }
               
               // Format status text (capitalize first letter)
