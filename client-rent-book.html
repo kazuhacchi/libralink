@@ -219,6 +219,22 @@
       font-size: 0.875rem;
     }
 
+    .date-display {
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: #f8fafc;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .date-display-label {
+      color: #64748b;
+      font-weight: 400;
+      margin-right: 0.5rem;
+    }
+
     .btn {
       padding: 0.875rem 1.5rem;
       border-radius: 8px;
@@ -346,10 +362,18 @@
           <div class="form-group">
             <label>Rental Date *</label>
             <input type="date" name="rental_date" required id="rentalDate">
+            <div class="date-display" id="rentalDateDisplay" style="display: none;">
+              <span class="date-display-label">Selected:</span>
+              <span id="rentalDateFormatted"></span>
+            </div>
           </div>
           <div class="form-group">
             <label>Return Date (auto-calculated)</label>
             <input type="date" name="return_date" id="returnDate" readonly>
+            <div class="date-display" id="returnDateDisplay" style="display: none;">
+              <span class="date-display-label">Calculated:</span>
+              <span id="returnDateFormatted"></span>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Rental Request</button>
         </form>
@@ -382,6 +406,41 @@
       var tomorrowStr = tomorrow.toISOString().split('T')[0];
       $('#rentalDate').attr('min', tomorrowStr);
 
+      // Helper function to format date as Month/Day/Year
+      function formatDate(dateString) {
+        if (!dateString) return '';
+        var date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        var month = date.getMonth() + 1; // getMonth() returns 0-11
+        var day = date.getDate();
+        var year = date.getFullYear();
+        return month + '/' + day + '/' + year;
+      }
+
+      // Update rental date display
+      function updateRentalDateDisplay() {
+        var rentalDate = $('#rentalDate').val();
+        if (rentalDate) {
+          var formatted = formatDate(rentalDate);
+          $('#rentalDateFormatted').text(formatted);
+          $('#rentalDateDisplay').show();
+        } else {
+          $('#rentalDateDisplay').hide();
+        }
+      }
+
+      // Update return date display
+      function updateReturnDateDisplay() {
+        var returnDate = $('#returnDate').val();
+        if (returnDate) {
+          var formatted = formatDate(returnDate);
+          $('#returnDateFormatted').text(formatted);
+          $('#returnDateDisplay').show();
+        } else {
+          $('#returnDateDisplay').hide();
+        }
+      }
+
       // Calculate return date
       function calculateReturnDate() {
         var rentalDate = $('#rentalDate').val();
@@ -391,11 +450,21 @@
           var date = new Date(rentalDate);
           date.setDate(date.getDate() + duration);
           $('#returnDate').val(date.toISOString().split('T')[0]);
+          updateReturnDateDisplay();
+        } else {
+          $('#returnDate').val('');
+          updateReturnDateDisplay();
         }
       }
 
-      $('#rentalDate').on('change', calculateReturnDate);
-      $('input[name="rental_duration"]').on('input', calculateReturnDate);
+      $('#rentalDate').on('change', function() {
+        calculateReturnDate();
+        updateRentalDateDisplay();
+      });
+      
+      $('input[name="rental_duration"]').on('input', function() {
+        calculateReturnDate();
+      });
 
       var allAvailableBooks = [];
       var selectedBook = null;
@@ -571,6 +640,8 @@
             $('#rentBookForm')[0].reset();
             $('#returnDate').val('');
             clearSelection();
+            updateRentalDateDisplay();
+            updateReturnDateDisplay();
             loadAvailableBooks();
             loadLibrariansList();
           })
