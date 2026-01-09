@@ -61,6 +61,164 @@
       cursor: not-allowed;
     }
 
+    .book-search-container {
+      position: relative;
+    }
+
+    .book-search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .book-search-results.show {
+      display: block;
+    }
+
+    .book-result-item {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .book-result-item:hover {
+      background: #f8fafc;
+    }
+
+    .book-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .book-result-item.selected {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+    }
+
+    .book-result-image {
+      width: 60px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .book-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .book-result-title {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .book-result-author {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .book-result-details {
+      color: #64748b;
+      font-size: 0.8rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .book-result-price {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .selected-book-display {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 2px solid #e2e8f0;
+      display: none;
+    }
+
+    .selected-book-display.show {
+      display: block;
+    }
+
+    .selected-book-content {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .selected-book-image {
+      width: 60px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .selected-book-info {
+      flex: 1;
+    }
+
+    .selected-book-title {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+
+    .selected-book-author {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .selected-book-details {
+      color: #64748b;
+      font-size: 0.8rem;
+    }
+
+    .clear-selection {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .clear-selection:hover {
+      background: #dc2626;
+    }
+
+    .no-results {
+      padding: 1rem;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+
     .btn {
       padding: 0.875rem 1.5rem;
       border-radius: 8px;
@@ -157,10 +315,23 @@
       <div class="form-container">
         <form id="rentBookForm">
           <div class="form-group">
-            <label>Select Book *</label>
-            <select name="book_id" id="bookSelect" required>
-              <option value="">Loading books...</option>
-            </select>
+            <label>Search Book *</label>
+            <div class="book-search-container">
+              <input type="text" id="bookSearch" placeholder="Search by title, author, or book code..." autocomplete="off">
+              <div class="book-search-results" id="bookSearchResults"></div>
+            </div>
+            <input type="hidden" name="book_id" id="bookId" required>
+            <div class="selected-book-display" id="selectedBookDisplay">
+              <div class="selected-book-content">
+                <img id="selectedBookImage" src="" alt="Selected book" class="selected-book-image">
+                <div class="selected-book-info">
+                  <div class="selected-book-title" id="selectedBookTitle"></div>
+                  <div class="selected-book-author" id="selectedBookAuthor"></div>
+                  <div class="selected-book-details" id="selectedBookDetails"></div>
+                </div>
+              </div>
+              <button type="button" class="clear-selection" id="clearSelection">Clear Selection</button>
+            </div>
           </div>
           <div class="form-group">
             <label>Select Librarian (optional)</label>
@@ -226,30 +397,125 @@
       $('#rentalDate').on('change', calculateReturnDate);
       $('input[name="rental_duration"]').on('input', calculateReturnDate);
 
+      var allAvailableBooks = [];
+      var selectedBook = null;
+
       function loadAvailableBooks() {
         loadBooks()
           .then(function(books) {
-            var availableBooks = books.filter(function(book) { return book.is_available; });
-            var $select = $('#bookSelect');
-            
-            if (availableBooks.length === 0) {
-              $select.html('<option value="">No available books</option>');
-              return;
-            }
-
-            $select.html('<option value="">Select a book...</option>');
-            $.each(availableBooks, function(index, book) {
-              var $option = $('<option>')
-                .val(book.id)
-                .text((book.book_code || 'ID: ' + book.id) + ' - ' + book.title + ' by ' + book.author + ' - ₱' + parseFloat(book.rental_price).toFixed(2) + '/day');
-              $select.append($option);
-            });
+            allAvailableBooks = books.filter(function(book) { return book.is_available; });
           })
           .catch(function(err) {
             console.error('Error loading books:', err);
-            $('#bookSelect').html('<option value="">Error loading books</option>');
           });
       }
+
+      function searchBooks(query) {
+        if (!query || query.trim() === '') {
+          $('#bookSearchResults').removeClass('show').empty();
+          return;
+        }
+
+        var searchTerm = query.toLowerCase().trim();
+        var filteredBooks = allAvailableBooks.filter(function(book) {
+          var title = (book.title || '').toLowerCase();
+          var author = (book.author || '').toLowerCase();
+          var bookCode = (book.book_code || '').toLowerCase();
+          var category = (book.category || '').toLowerCase();
+          
+          return title.includes(searchTerm) || 
+                 author.includes(searchTerm) || 
+                 bookCode.includes(searchTerm) ||
+                 category.includes(searchTerm);
+        });
+
+        displaySearchResults(filteredBooks);
+      }
+
+      function displaySearchResults(books) {
+        var $results = $('#bookSearchResults');
+        $results.empty();
+
+        if (books.length === 0) {
+          $results.html('<div class="no-results">No books found matching your search.</div>');
+          $results.addClass('show');
+          return;
+        }
+
+        $.each(books, function(index, book) {
+          var imageUrl = book.image_path ? UPLOADS_BASE_URL + '/' + book.image_path.replace(/^uploads\//, '') : UPLOADS_BASE_URL + '/default.png';
+          var bookCode = book.book_code || ('ID: ' + book.id);
+          var price = '₱' + parseFloat(book.rental_price).toFixed(2) + '/day';
+          
+          var $item = $('<div>')
+            .addClass('book-result-item')
+            .data('book', book)
+            .html(
+              '<img src="' + imageUrl + '" alt="' + book.title + '" class="book-result-image" onerror="this.src=\'' + UPLOADS_BASE_URL + '/default.png\'">' +
+              '<div class="book-result-info">' +
+                '<div class="book-result-title">' + book.title + '</div>' +
+                '<div class="book-result-author">by ' + book.author + '</div>' +
+                '<div class="book-result-details">' +
+                  '<span>' + bookCode + '</span>' +
+                  '<span class="book-result-price">' + price + '</span>' +
+                '</div>' +
+              '</div>'
+            )
+            .on('click', function() {
+              selectBook(book);
+            });
+          
+          $results.append($item);
+        });
+
+        $results.addClass('show');
+      }
+
+      function selectBook(book) {
+        selectedBook = book;
+        $('#bookId').val(book.id);
+        
+        var imageUrl = book.image_path ? UPLOADS_BASE_URL + '/' + book.image_path.replace(/^uploads\//, '') : UPLOADS_BASE_URL + '/default.png';
+        var bookCode = book.book_code || ('ID: ' + book.id);
+        var price = '₱' + parseFloat(book.rental_price).toFixed(2) + '/day';
+        
+        $('#selectedBookImage').attr('src', imageUrl).attr('alt', book.title);
+        $('#selectedBookTitle').text(book.title);
+        $('#selectedBookAuthor').text('by ' + book.author);
+        $('#selectedBookDetails').html(bookCode + ' • ' + price);
+        
+        $('#selectedBookDisplay').addClass('show');
+        $('#bookSearchResults').removeClass('show');
+        $('#bookSearch').val('');
+      }
+
+      function clearSelection() {
+        selectedBook = null;
+        $('#bookId').val('');
+        $('#selectedBookDisplay').removeClass('show');
+        $('#bookSearch').val('');
+        $('#bookSearchResults').removeClass('show');
+      }
+
+      // Search input handler
+      var searchTimeout;
+      $('#bookSearch').on('input', function() {
+        var query = $(this).val();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+          searchBooks(query);
+        }, 300);
+      });
+
+      // Clear selection button
+      $('#clearSelection').on('click', clearSelection);
+
+      // Close search results when clicking outside
+      $(document).on('click', function(e) {
+        if (!$(e.target).closest('.book-search-container').length) {
+          $('#bookSearchResults').removeClass('show');
+        }
+      });
 
       function loadLibrariansList() {
         authAxios({
@@ -282,8 +548,14 @@
       $('#rentBookForm').on('submit', function(e) {
         e.preventDefault();
         
+        if (!selectedBook) {
+          alert('Please select a book first.');
+          $('#bookSearch').focus();
+          return;
+        }
+        
         var rentalData = {
-          book_id: parseInt($('#bookSelect').val()),
+          book_id: parseInt($('#bookId').val()),
           rental_duration: parseInt($('input[name="rental_duration"]').val()),
           rental_date: $('#rentalDate').val()
         };
@@ -298,6 +570,7 @@
             alert('Rental request submitted successfully!');
             $('#rentBookForm')[0].reset();
             $('#returnDate').val('');
+            clearSelection();
             loadAvailableBooks();
             loadLibrariansList();
           })
