@@ -248,6 +248,15 @@
         return;
       }
 
+      // Helper function to format date as Month/Day/Year
+      function formatDate(dateString) {
+        var date = new Date(dateString);
+        var month = date.getMonth() + 1; // getMonth() returns 0-11
+        var day = date.getDate();
+        var year = date.getFullYear();
+        return month + '/' + day + '/' + year;
+      }
+
       function loadRentalsList() {
         loadAllRentals()
           .then(function(rentals) {
@@ -328,8 +337,8 @@
                 '<td>' + rental.client_name + '</td>' +
                 '<td>' + (rental.book_code || 'N/A') + '</td>' +
                 '<td>' + rental.book_title + '</td>' +
-                '<td>' + new Date(rental.rental_date).toLocaleDateString() + '</td>' +
-                '<td>' + new Date(rental.return_date).toLocaleDateString() + '</td>' +
+                '<td>' + formatDate(rental.rental_date) + '</td>' +
+                '<td>' + formatDate(rental.return_date) + '</td>' +
                 '<td>' + (rental.librarian_name || 'Unassigned') + '</td>' +
                 '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
                 '<td>' + actionButtons + '</td>'
